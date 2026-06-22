@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      cursor: none
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px
+    }
+
+    body {
+      background: #000;
+      color: #f5f4f0;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      min-height: 100vh
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+      opacity: 0.02;
+      pointer-events: none;
+      z-index: 9999;
+      animation: grain 8s steps(10) infinite
+    }
+
+    @keyframes grain {
+
+      0%,
+      100% {
+        transform: translate(0, 0)
+      }
+
+      10% {
+        transform: translate(-2%, -3%)
+      }
+
+      20% {
+        transform: translate(3%, 1%)
+      }
+
+      30% {
+        transform: translate(-1%, 4%)
+      }
+
+      40% {
+        transform: translate(4%, -1%)
+      }
+
+      50% {
+        transform: translate(-3%, 3%)
+      }
+
+      60% {
+        transform: translate(2%, -4%)
+      }
+
+      70% {
+        transform: translate(-4%, 2%)
+      }
+
+      80% {
+        transform: translate(1%, -2%)
+      }
+
+      90% {
+        transform: translate(-2%, 4%)
+      }
+    }
+  </style>
+
+  <style>
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 120, 80, .12), transparent 30%),
+        radial-gradient(circle at 80% 30%, rgba(80, 120, 255, .10), transparent 35%),
+        radial-gradient(circle at 50% 80%, rgba(180, 80, 255, .08), transparent 35%);
+      animation: floatGlow 12s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes floatGlow {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-20px)
+      }
+    }
+
+    .glass-card {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(255, 255, 255, .08);
+    }
+  </style>
+
+
+  <style>
+    /* Monochrome 3D background system */
+    body::after {
+      display: none !important;
+    }
+
+    .bg-orbit {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .bg-orbit:before,
+    .bg-orbit:after {
+      content: '';
+      position: absolute;
+      width: 900px;
+      height: 900px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .05);
+      left: 50%;
+      top: 50%;
+      transform-style: preserve-3d;
+    }
+
+    .bg-orbit:before {
+      transform: translate(-50%, -50%) rotateX(75deg);
+      animation: spin1 35s linear infinite;
+    }
+
+    .bg-orbit:after {
+      width: 1200px;
+      height: 1200px;
+      transform: translate(-50%, -50%) rotateX(82deg);
+      animation: spin2 55s linear infinite reverse;
+    }
+
+    .emblem {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      background-image:
+        radial-gradient(circle at center, rgba(255, 255, 255, .03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(circle at center, black 20%, transparent 80%);
+      opacity: .5;
+      animation: drift 40s linear infinite;
+    }
+
+    @keyframes spin1 {
+      from {
+        transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg)
+      }
+
+      to {
+        transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg)
+      }
+    }
+
+    @keyframes spin2 {
+      from {
+        transform: translate(-50%, -50%) rotateX(82deg) rotateZ(0deg)
+      }
+
+      to {
+        transform: translate(-50%, -50%) rotateX(82deg) rotateZ(360deg)
+      }
+    }
+
+    @keyframes drift {
+      from {
+        transform: translateY(0)
+      }
+
+      to {
+        transform: translateY(-50px)
+      }
+    }
+
+    .hero-emblem {
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .05);
+      box-shadow:
+        0 0 120px rgba(255, 255, 255, .03),
+        inset 0 0 80px rgba(255, 255, 255, .02);
+      pointer-events: none;
+    }
+
+    .hero-emblem:before,
+    .hero-emblem:after {
+      content: '';
+      position: absolute;
+      inset: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .04);
+    }
+
+    .hero-emblem:after {
+      inset: 90px;
+    }
+  </style>
+
+  <style>
+    .youtube-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 32px;
+    }
+
+    .video-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+      background: #111;
+    }
+
+    .video-card iframe {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: none;
+      display: block;
+    }
+
+    @media(max-width:768px) {
+      .youtube-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .youtube-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+      gap: 48px 32px;
+    }
+
+    .video-card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .video-wrapper {
+      overflow: hidden;
+      border-radius: 4px;
+      background: #111;
+    }
+
+    .video-wrapper iframe {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: none;
+      display: block;
+    }
+
+    .video-info {
+      margin-top: 18px;
+      padding: 10px;
+    }
+
+    .video-info h3 {
+      margin: 0 0 8px;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, .9);
+    }
+
+    .video-info p {
+      margin: 0;
+      font-size: 9px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .28);
+    }
+
+    @media(max-width:768px) {
+      .youtube-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .video-info h3 {
+        font-size: 18px;
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+  <div class="bg-orbit"></div>
+  <div class="emblem"></div>
+
+  <!-- Custom cursor -->
+  <div id="dot"
+    style="position:fixed;width:7px;height:7px;background:#f5f4f0;border-radius:50%;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .3s,height .3s">
+  </div>
+  <div id="ring"
+    style="position:fixed;width:30px;height:30px;border:1px solid rgba(245,244,240,.25);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left .08s linear,top .08s linear">
+  </div>
+
+  <!-- NAV -->
+  <nav id="nav"
+    style="position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:28px 64px;opacity:0;animation:fadeIn 1.4s .8s forwards">
+    <a href="#hero"
+      style="font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:color .5s">Arslan
+      Rana</a>
+    <div style="display:flex;gap:40px">
+      <a href="#work"
+        style="font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:color .5s"
+        onmouseenter="this.style.color='rgba(255,255,255,.8)'"
+        onmouseleave="this.style.color='rgba(255,255,255,.35)'">Work</a>
+      <a href="#about"
+        style="font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:color .5s"
+        onmouseenter="this.style.color='rgba(255,255,255,.8)'"
+        onmouseleave="this.style.color='rgba(255,255,255,.35)'">About</a>
+      <a href="#contact"
+        style="font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.35);text-decoration:none;transition:color .5s"
+        onmouseenter="this.style.color='rgba(255,255,255,.8)'"
+        onmouseleave="this.style.color='rgba(255,255,255,.35)'">Contact</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-emblem"></div>
+    <section id="hero"
+      style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;padding:0 32px">
+      <video preload="auto" autoplay loop muted style="
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:0;
+  ">
+        <source src="Timeline1.mp4" type="video/mp4">
+      </video>
+      <div
+        style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(80,60,40,.15) 0%,transparent 60%),linear-gradient(to bottom,rgba(0,0,0,.5) 0%,rgba(0,0,0,.2) 50%,#000 100%);pointer-events:none">
+      </div>
+
+      <div style="position:relative;z-index:1;text-align:center;max-width:780px">
+        <p
+          style="font-size:9px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.25);margin-bottom:48px;opacity:0;animation:slideUp 1.2s .4s forwards">
+          Selected Works — 2019–2024</p>
+
+        <h1
+          style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(56px,12vw,110px);line-height:.92;letter-spacing:-.02em;color:#f5f4f0;margin-bottom:24px;opacity:0;animation:slideUp 1.4s .7s forwards;font-weight:400">
+          Arslan<br><span style="font-style:italic;color:rgba(255,255,255,.6)">Rana</span>
+        </h1>
+
+        <p
+          style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:64px;opacity:0;animation:slideUp 1.4s 1s forwards">
+          Cinematic Storyteller&nbsp;&nbsp;/&nbsp;&nbsp;Director&nbsp;&nbsp;/&nbsp;&nbsp;Cinematographer</p>
+
+        <div
+          style="display:flex;align-items:center;justify-content:center;gap:32px;opacity:0;animation:slideUp 1.2s 1.3s forwards;flex-wrap:wrap">
+          <a href="#work"
+            style="font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.15);padding:14px 32px;text-decoration:none;transition:all .6s"
+            onmouseenter="this.style.color='rgba(255,255,255,.95)';this.style.borderColor='rgba(255,255,255,.4)'"
+            onmouseleave="this.style.color='rgba(255,255,255,.55)';this.style.borderColor='rgba(255,255,255,.15)'">View
+            Work</a>
+          <a href="#contact"
+            style="font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.28);text-decoration:none;transition:color .5s"
+            onmouseenter="this.style.color='rgba(255,255,255,.6)'"
+            onmouseleave="this.style.color='rgba(255,255,255,.28)'">Get in Touch →</a>
+        </div>
+      </div>
+
+      <!-- Scroll hint -->
+      <div
+        style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:12px;opacity:0;animation:fadeIn 1s 2.2s forwards">
+        <span
+          style="font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.18)">Scroll</span>
+        <div style="width:1px;height:48px;background:linear-gradient(to bottom,rgba(255,255,255,.2),transparent)"></div>
+      </div>
+
+      <!-- Vertical side labels -->
+      <p
+        style="position:absolute;bottom:48px;right:48px;font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);writing-mode:vertical-rl;transform:rotate(180deg);opacity:0;animation:fadeIn 1s 1.8s forwards">
+        Based in Lahore, PK</p>
+      <p
+        style="position:absolute;bottom:48px;left:48px;font-size:8px;letter-spacing:.25em;color:rgba(255,255,255,.18);writing-mode:vertical-rl;transform:rotate(180deg);opacity:0;animation:fadeIn 1s 1.8s forwards">
+        © 2024</p>
+    </section>
+
+    <!-- FEATURED REEL -->
+    <section id="reel" style="padding:120px 64px">
+      <p
+        style="font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:32px">
+        Featured Reel</p>
+      <div
+        style="aspect-ratio:16/9;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.02)">
+        <div style="text-align:center">
+          <h3 style="font-family:'Playfair Display',serif;font-size:48px;font-weight:400">Showreel</h3>
+          <p style="opacity:.6">Embed Vimeo / YouTube Reel Here</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BTS -->
+    <!-- <section id="process" style="padding:120px 64px">
+      <p
+        style="font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:32px">
+        Behind The Scenes</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+        <div
+          style="aspect-ratio:16/10;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center">
+          Running Shot 01</div>
+        <div
+          style="aspect-ratio:16/10;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center">
+          Directing Talent</div>
+        <div
+          style="aspect-ratio:16/10;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center">
+          On Set</div>
+      </div>
+    </section> -->
+
+    <!-- WORK -->
+    <section id="work" style="padding:120px 64px">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:80px">
+        <div>
+          <p
+            style="font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:14px">
+            Selected Work</p>
+          <h2
+            style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,5vw,52px);font-style:italic;font-weight:400;color:rgba(255,255,255,.85)">
+            Films</h2>
+        </div>
+        <p style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.18)">2022–2024</p>
+      </div>
+
+      <!-- <div id="filmList"></div> -->
+      <section id="work" style="padding:120px 64px">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:80px">
+          <div>
+            <p
+              style="font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:14px">
+              Selected Work
+            </p>
+
+            <h2
+              style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,5vw,52px);font-style:italic;font-weight:400;color:rgba(255,255,255,.85)">
+              Films
+            </h2>
+          </div>
+
+          <p style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.18)">
+            2022–2024
+          </p>
+        </div>
+
+        <div class="youtube-grid">
+
+          <div class="video-card">
+            <div class="video-wrapper">
+              <iframe src="https://www.youtube.com/embed/VIDEO_ID_1" title="Film 1" allowfullscreen>
+              </iframe>
+            </div>
+
+            <div class="video-info">
+              <h3>The Last Journey</h3>
+              <p>Short Film / Director & Editor</p>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-wrapper">
+              <iframe src="https://www.youtube.com/embed/VIDEO_ID_2" title="Film 2" allowfullscreen>
+              </iframe>
+            </div>
+
+            <div class="video-info">
+              <h3>Fragments of Time</h3>
+              <p>Commercial / Cinematography</p>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-wrapper">
+              <iframe src="https://www.youtube.com/embed/VIDEO_ID_3" title="Film 3" allowfullscreen>
+              </iframe>
+            </div>
+
+            <div class="video-info">
+              <h3>Beyond the Horizon</h3>
+              <p>Music Video / Editing</p>
+            </div>
+          </div>
+
+          <div class="video-card">
+            <div class="video-wrapper">
+              <iframe src="https://www.youtube.com/embed/VIDEO_ID_4" title="Film 4" allowfullscreen>
+              </iframe>
+            </div>
+
+            <div class="video-info">
+              <h3>Echoes</h3>
+              <p>Documentary / Director</p>
+            </div>
+          </div>
+
+        </div>
+        <!-- <div class="youtube-grid">
+
+          <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/VIDEO_ID_1" title="Film 1" allowfullscreen>
+            </iframe>
+          </div>
+
+          <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/VIDEO_ID_2" title="Film 2" allowfullscreen>
+            </iframe>
+          </div>
+
+          <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/VIDEO_ID_3" title="Film 3" allowfullscreen>
+            </iframe>
+          </div>
+
+          <div class="video-card">
+            <iframe src="https://www.youtube.com/embed/VIDEO_ID_4" title="Film 4" allowfullscreen>
+            </iframe>
+          </div>
+
+        </div> -->
+
+        <p
+          style="margin-top:40px;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.14)">
+          Full reel available on request
+        </p>
+      </section>
+
+      <p style="margin-top:40px;font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.14)">
+        Full reel available on request</p>
+    </section>
+
+    <!-- ABOUT -->
+    <!-- ABOUT -->
+    <section id="about" style="padding:120px 64px">
+      <div style="height:1px;background:rgba(255,255,255,.06);margin-bottom:80px"></div>
+
+      <p
+        style="font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:56px">
+        About
+      </p>
+
+      <div style="max-width:1100px;display:grid;grid-template-columns:1.2fr .8fr;gap:100px">
+
+        <!-- LEFT -->
+        <div>
+          <h2 style="
+        font-family:'Playfair Display', Georgia, serif;
+        font-size:clamp(42px,6vw,82px);
+        line-height:.95;
+        font-weight:400;
+        color:rgba(255,255,255,.85);
+        margin-bottom:40px;
+        max-width:700px;
+      ">
+            I tell stories through light, movement, and emotion.
+          </h2>
+
+          <p style="
+        font-size:clamp(16px,1.8vw,20px);
+        line-height:1.9;
+        color:rgba(255,255,255,.55);
+        font-weight:300;
+        max-width:760px;
+      ">
+            As a director and cinematographer, I am drawn to moments that feel real —
+            unspoken glances, imperfect details, and the atmosphere between words.
+            My work spans documentaries, commercial films, music videos, and branded
+            content, always driven by a cinematic approach and a deep respect for storytelling.
+          </p>
+        </div>
+
+        <!-- RIGHT -->
+        <div style="
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      gap:40px;
+      border-left:1px solid rgba(255,255,255,.06);
+      padding-left:48px;
+    ">
+          <div>
+            <p style="
+          font-size:8px;
+          letter-spacing:.3em;
+          text-transform:uppercase;
+          color:rgba(255,255,255,.2);
+          margin-bottom:12px;
+        ">
+              Focus
+            </p>
+
+            <p style="
+          font-size:15px;
+          line-height:1.8;
+          color:rgba(255,255,255,.45);
+          font-weight:300;
+        ">
+              Crafting visually driven narratives that balance authenticity,
+              atmosphere, and emotion.
+            </p>
+          </div>
+
+          <div>
+            <p style="
+          font-size:8px;
+          letter-spacing:.3em;
+          text-transform:uppercase;
+          color:rgba(255,255,255,.2);
+          margin-bottom:12px;
+        ">
+              Approach
+            </p>
+
+            <p style="
+          font-size:15px;
+          line-height:1.8;
+          color:rgba(255,255,255,.45);
+          font-weight:300;
+        ">
+              Every frame is built around feeling first — using light,
+              composition, movement, and performance to create stories that
+              resonate beyond the screen.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:32px;margin-top:80px">
+
+        <span style="
+      font-size:8px;
+      letter-spacing:.25em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.18);
+      border-bottom:1px solid rgba(255,255,255,.07);
+      padding-bottom:6px">
+          Direction
+        </span>
+
+        <span style="
+      font-size:8px;
+      letter-spacing:.25em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.18);
+      border-bottom:1px solid rgba(255,255,255,.07);
+      padding-bottom:6px">
+          Cinematography
+        </span>
+
+        <span style="
+      font-size:8px;
+      letter-spacing:.25em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.18);
+      border-bottom:1px solid rgba(255,255,255,.07);
+      padding-bottom:6px">
+          Documentary
+        </span>
+
+        <span style="
+      font-size:8px;
+      letter-spacing:.25em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.18);
+      border-bottom:1px solid rgba(255,255,255,.07);
+      padding-bottom:6px">
+          Commercial Film
+        </span>
+
+        <span style="
+      font-size:8px;
+      letter-spacing:.25em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.18);
+      border-bottom:1px solid rgba(255,255,255,.07);
+      padding-bottom:6px">
+          Music Video
+        </span>
+
+        <span style="
+      font-size:8px;
+      letter-spacing:.25em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.18);
+      border-bottom:1px solid rgba(255,255,255,.07);
+      padding-bottom:6px">
+          Branded Content
+        </span>
+
+      </div>
+    </section>
+    <!-- <section id="about" style="padding:120px 64px">
+      <div style="height:1px;background:rgba(255,255,255,.06);margin-bottom:80px"></div>
+      <p
+        style="font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:56px">
+        About</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;max-width:900px">
+        <div>
+          <p
+            style="font-size:clamp(15px,1.8vw,18px);line-height:1.8;color:rgba(255,255,255,.5);margin-bottom:24px;font-weight:300">
+            I make films the way some people write letters — with intention, restraint, and an eye for what remains
+            after the moment passes.</p>
+          <p style="font-size:13px;line-height:1.9;color:rgba(255,255,255,.25);font-weight:300">Based between Lahore and
+            wherever the work takes me. Drawn to stories that live in the peripheral — things felt before they are
+            understood.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px 24px;align-content:start">
+          <div>
+            <p
+              style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.5vw,42px);color:rgba(255,255,255,.65);margin-bottom:6px;font-weight:400">
+              40+</p>
+            <p style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.22)">Projects
+            </p>
+          </div>
+          <div>
+            <p
+              style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.5vw,42px);color:rgba(255,255,255,.65);margin-bottom:6px;font-weight:400">
+              12</p>
+            <p style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.22)">Awards
+            </p>
+          </div>
+          <div>
+            <p
+              style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.5vw,42px);color:rgba(255,255,255,.65);margin-bottom:6px;font-weight:400">
+              6</p>
+            <p style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.22)">Countries
+            </p>
+          </div>
+          <div>
+            <p
+              style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.5vw,42px);color:rgba(255,255,255,.65);margin-bottom:6px;font-weight:400">
+              2019</p>
+            <p style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.22)">Est.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:32px;margin-top:56px">
+        <span
+          style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:6px">Direction</span>
+        <span
+          style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:6px">Cinematography</span>
+        <span
+          style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:6px">Documentary</span>
+        <span
+          style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:6px">Music
+          Video</span>
+        <span
+          style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:6px">Color
+          Grading</span>
+      </div>
+    </section> -->
+
+    <!-- CONTACT -->
+    <section id="contact" style="padding:120px 64px">
+      <div style="height:1px;background:rgba(255,255,255,.06);margin-bottom:80px"></div>
+      <p
+        style="font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:48px">
+        Contact</p>
+
+      <h2
+        style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,7vw,82px);line-height:1.05;letter-spacing:-.015em;color:rgba(255,255,255,.75);font-weight:400;margin-bottom:56px">
+        Let's make<br><span style="font-style:italic;color:rgba(255,255,255,.35)">something.</span></h2>
+
+      <div style="max-width:480px;display:flex;flex-direction:column;gap:0">
+        <a href="mailto:arslan@example.com" class="contact-row"
+          style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);padding:20px 0;text-decoration:none;transition:border-color .5s"
+          onmouseenter="this.style.borderColor='rgba(255,255,255,.2)';this.querySelector('.cl').style.color='rgba(255,255,255,.75)';this.querySelector('.ca').style.color='rgba(255,255,255,.45)'"
+          onmouseleave="this.style.borderColor='rgba(255,255,255,.07)';this.querySelector('.cl').style.color='rgba(255,255,255,.42)';this.querySelector('.ca').style.color='rgba(255,255,255,.18)'">
+          <div>
+            <p
+              style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-bottom:8px">
+              Email</p>
+            <p class="cl" style="font-size:13px;color:rgba(255,255,255,.42);letter-spacing:.03em;transition:color .5s">
+              arslan@example.com</p>
+          </div>
+          <span class="ca" style="color:rgba(255,255,255,.18);font-size:14px;transition:color .5s">→</span>
+        </a>
+        <a href="#" class="contact-row"
+          style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);padding:20px 0;text-decoration:none;transition:border-color .5s"
+          onmouseenter="this.style.borderColor='rgba(255,255,255,.2)';this.querySelector('.cl').style.color='rgba(255,255,255,.75)';this.querySelector('.ca').style.color='rgba(255,255,255,.45)'"
+          onmouseleave="this.style.borderColor='rgba(255,255,255,.07)';this.querySelector('.cl').style.color='rgba(255,255,255,.42)';this.querySelector('.ca').style.color='rgba(255,255,255,.18)'">
+          <div>
+            <p
+              style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-bottom:8px">
+              Instagram</p>
+            <p class="cl" style="font-size:13px;color:rgba(255,255,255,.42);letter-spacing:.03em;transition:color .5s">
+              @arslanrana</p>
+          </div>
+          <span class="ca" style="color:rgba(255,255,255,.18);font-size:14px;transition:color .5s">→</span>
+        </a>
+        <a href="#" class="contact-row"
+          style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);padding:20px 0;text-decoration:none;transition:border-color .5s"
+          onmouseenter="this.style.borderColor='rgba(255,255,255,.2)';this.querySelector('.cl').style.color='rgba(255,255,255,.75)';this.querySelector('.ca').style.color='rgba(255,255,255,.45)'"
+          onmouseleave="this.style.borderColor='rgba(255,255,255,.07)';this.querySelector('.cl').style.color='rgba(255,255,255,.42)';this.querySelector('.ca').style.color='rgba(255,255,255,.18)'">
+          <div>
+            <p
+              style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-bottom:8px">
+              Vimeo</p>
+            <p class="cl" style="font-size:13px;color:rgba(255,255,255,.42);letter-spacing:.03em;transition:color .5s">
+              vimeo.com/arslanrana</p>
+          </div>
+          <span class="ca" style="color:rgba(255,255,255,.18);font-size:14px;transition:color .5s">→</span>
+        </a>
+      </div>
+
+      <div style="margin-top:96px;display:flex;align-items:center;justify-content:space-between">
+        <p style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.12)">© 2024 Arslan
+          Rana — All Rights Reserved</p>
+        <p style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.08)">Lahore,
+          Pakistan</p>
+      </div>
+    </section>
+
+    <style>
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(28px)
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0)
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0
+        }
+
+        to {
+          opacity: 1
+        }
+      }
+    </style>
+
+    <script>
+      const films = [
+        { idx: '001', title: 'Echo', role: 'Short Film', disc: 'Cinematography', year: '2024', loc: 'Lahore' },
+        { idx: '002', title: 'Static Light', role: 'Music Video', disc: 'Direction', year: '2023', loc: 'Karachi' },
+        { idx: '003', title: 'Dust & Roads', role: 'Documentary', disc: 'Camera', year: '2023', loc: 'Rural Punjab' },
+        { idx: '004', title: 'The Fold', role: 'Short Film', disc: 'Direction & DP', year: '2022', loc: 'Islamabad' },
+        { idx: '005', title: 'Salt Flats', role: 'Commercial', disc: 'Cinematography', year: '2022', loc: 'Balochistan' },
+      ];
+
+      const list = document.getElementById('filmList');
+
+      films.forEach((f, i) => {
+        const div = document.createElement('div');
+        div.style.cssText = 'animation:slideUp .8s ' + (0.1 + i * .1) + 's both';
+        div.innerHTML = `
+    <div style="height:1px;background:rgba(255,255,255,.06);transition:background .4s" class="dl${i}"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:28px 0;opacity:.5;transition:opacity .5s;cursor:none" class="fr${i}">
+      <span style="font-size:8px;letter-spacing:.25em;color:rgba(255,255,255,.22);width:40px">${f.idx}</span>
+      <h3 class="ft${i}" style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,4vw,44px);font-weight:400;color:#f5f4f0;flex:1;margin-left:24px;transition:transform .5s cubic-bezier(.22,1,.36,1)">${f.title}</h3>
+      <div style="text-align:right;margin-left:32px">
+        <p style="font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.32)">${f.role}</p>
+        <p style="font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-top:4px">${f.disc}</p>
+      </div>
+      <div style="text-align:right;margin-left:40px;min-width:60px">
+        <p style="font-size:9px;letter-spacing:.2em;color:rgba(255,255,255,.28)">${f.year}</p>
+        <p style="font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.14);margin-top:4px">${f.loc}</p>
+      </div>
+      <span class="fa${i}" style="font-size:13px;color:rgba(255,255,255,.25);margin-left:24px;opacity:0;transform:translateX(-8px);transition:opacity .4s,transform .4s">→</span>
+    </div>
+  `;
+        list.appendChild(div);
+
+        const row = div.querySelector('.fr' + i);
+        const title = div.querySelector('.ft' + i);
+        const arrow = div.querySelector('.fa' + i);
+        const dl = div.querySelector('.dl' + i);
+
+        row.addEventListener('mouseenter', () => {
+          row.style.opacity = '1';
+          title.style.transform = 'translateX(6px)';
+          arrow.style.opacity = '1';
+          arrow.style.transform = 'translateX(0)';
+          dl.style.background = 'rgba(255,255,255,.12)';
+        });
+        row.addEventListener('mouseleave', () => {
+          row.style.opacity = '0.5';
+          title.style.transform = 'translateX(0)';
+          arrow.style.opacity = '0';
+          arrow.style.transform = 'translateX(-8px)';
+          dl.style.background = 'rgba(255,255,255,.06)';
+        });
+      });
+      const lastDiv = document.createElement('div');
+      lastDiv.style.cssText = 'height:1px;background:rgba(255,255,255,.06)';
+      list.appendChild(lastDiv);
+
+      // Cursor
+      const dot = document.getElementById('dot');
+      const ring = document.getElementById('ring');
+      let mx = 0, my = 0, rx = 0, ry = 0;
+      document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dot.style.left = mx + 'px'; dot.style.top = my + 'px' });
+      (function loop() { rx += (mx - rx) * .1; ry += (my - ry) * .1; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(loop) })();
+
+      document.querySelectorAll('a,button,[class*="fr"]').forEach(el => {
+        el.addEventListener('mouseenter', () => { dot.style.width = '36px'; dot.style.height = '36px' });
+        el.addEventListener('mouseleave', () => { dot.style.width = '7px'; dot.style.height = '7px' });
+      });
+
+      // Scroll-triggered fade in
+      const obs = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) { e.target.style.opacity = '1'; e.target.style.transform = 'translateY(0)' } }) }, { threshold: .1 });
+      document.querySelectorAll('section>*:not(#filmList)').forEach(el => {
+        if (!el.style.animation) { el.style.opacity = '0'; el.style.transform = 'translateY(20px)'; el.style.transition = 'opacity .9s ease,transform .9s ease'; obs.observe(el) }
+      });
+    </script>
+</body>
+
+</html>
