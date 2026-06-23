@@ -7,7 +7,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap"
     rel="stylesheet">
-  <style>
+  <!-- <style>
     * {
       margin: 0;
       padding: 0;
@@ -313,6 +313,456 @@
       }
     }
   </style>
+   -->
+
+
+  <style>
+    /* ================================================================
+   RESET
+   ================================================================ */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ================================================================
+   DESIGN TOKENS
+   â€” palette: deep warm navy bg, slate-blue surfaces, sage accents
+   ================================================================ */
+    :root {
+      --bg: #0e1117;
+      --bg-surface: #141820;
+      --bg-card: #181e28;
+
+      --text-hi: #e8e6e0;
+      --text-mid: #9a98a0;
+      --text-lo: rgba(200, 198, 210, .28);
+
+      --border: rgba(160, 168, 200, .09);
+      --border-hi: rgba(160, 168, 200, .18);
+
+      --accent: #7c9e8a;
+      --accent-glow: rgba(124, 158, 138, .12);
+
+      --pad: clamp(14px, 5vw, 60px);
+      --gap: clamp(18px, 3vw, 44px);
+      --radius: 8px;
+
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+      --ease: cubic-bezier(.16, 1, .3, 1);
+    }
+
+    /* ================================================================
+   BASE
+   ================================================================ */
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-hi);
+      font-family: var(--font-body);
+      font-weight: 300;
+      overflow-x: hidden;
+      min-height: 100vh;
+      line-height: 1.65;
+    }
+
+    /* ================================================================
+   GRAIN  â€” softer, barely-there
+   ================================================================ */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+      opacity: .012;
+      pointer-events: none;
+      z-index: 9999;
+      will-change: transform;
+      animation: grain 8s steps(10) infinite;
+    }
+
+    @keyframes grain {
+
+      0%,
+      100% {
+        transform: translate(0, 0)
+      }
+
+      10% {
+        transform: translate(-2%, -3%)
+      }
+
+      20% {
+        transform: translate(3%, 1%)
+      }
+
+      30% {
+        transform: translate(-1%, 4%)
+      }
+
+      40% {
+        transform: translate(4%, -1%)
+      }
+
+      50% {
+        transform: translate(-3%, 3%)
+      }
+
+      60% {
+        transform: translate(2%, -4%)
+      }
+
+      70% {
+        transform: translate(-4%, 2%)
+      }
+
+      80% {
+        transform: translate(1%, -2%)
+      }
+
+      90% {
+        transform: translate(-2%, 4%)
+      }
+    }
+
+    /* ================================================================
+   AMBIENT GLOW  â€” muted warm-cool split, easier on the eye
+   ================================================================ */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+      background:
+        radial-gradient(ellipse 60% 50% at 15% 15%, rgba(124, 158, 138, .07), transparent),
+        radial-gradient(ellipse 55% 45% at 85% 20%, rgba(100, 120, 180, .06), transparent),
+        radial-gradient(ellipse 50% 60% at 50% 95%, rgba(160, 100, 140, .05), transparent);
+      animation: floatGlow 16s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    @keyframes floatGlow {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-18px)
+      }
+    }
+
+    /* ================================================================
+   GLASS UTILITY
+   ================================================================ */
+    .glass-card {
+      backdrop-filter: blur(14px) saturate(110%);
+      -webkit-backdrop-filter: blur(14px) saturate(110%);
+      background: rgba(24, 30, 40, .65);
+      border: 1px solid var(--border);
+      transition: border-color .35s var(--ease);
+    }
+
+    .glass-card:hover {
+      border-color: var(--border-hi);
+    }
+
+    /* ================================================================
+   3-D ORBIT  (monochrome bg â€” disables body::after)
+   â€” kept but body::after still runs since we changed colors above
+   ================================================================ */
+    .bg-orbit {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .bg-orbit::before,
+    .bg-orbit::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(160, 168, 200, .04);
+      left: 50%;
+      top: 50%;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .bg-orbit::before {
+      width: min(900px, 140vw);
+      height: min(900px, 140vw);
+      transform: translate(-50%, -50%) rotateX(75deg);
+      animation: spin1 40s linear infinite;
+    }
+
+    .bg-orbit::after {
+      width: min(1200px, 185vw);
+      height: min(1200px, 185vw);
+      transform: translate(-50%, -50%) rotateX(82deg);
+      animation: spin2 65s linear infinite reverse;
+    }
+
+    @keyframes spin1 {
+      from {
+        transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg)
+      }
+
+      to {
+        transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg)
+      }
+    }
+
+    @keyframes spin2 {
+      from {
+        transform: translate(-50%, -50%) rotateX(82deg) rotateZ(0deg)
+      }
+
+      to {
+        transform: translate(-50%, -50%) rotateX(82deg) rotateZ(360deg)
+      }
+    }
+
+    /* ================================================================
+   DOT-GRID EMBLEM
+   ================================================================ */
+    .emblem {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      background-image: radial-gradient(circle at center, rgba(160, 168, 200, .028) 1px, transparent 1px);
+      background-size: 52px 52px;
+      mask-image: radial-gradient(circle at center, black 20%, transparent 78%);
+      -webkit-mask-image: radial-gradient(circle at center, black 20%, transparent 78%);
+      opacity: .45;
+      will-change: transform;
+      animation: drift 45s linear infinite;
+    }
+
+    @keyframes drift {
+      from {
+        transform: translateY(0)
+      }
+
+      to {
+        transform: translateY(-52px)
+      }
+    }
+
+    /* ================================================================
+   HERO EMBLEM RINGS
+   ================================================================ */
+    .hero-emblem {
+      position: absolute;
+      width: clamp(180px, 50vw, 420px);
+      height: clamp(180px, 50vw, 420px);
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 1px solid rgba(124, 158, 138, .08);
+      box-shadow:
+        0 0 100px rgba(124, 158, 138, .04),
+        inset 0 0 70px rgba(124, 158, 138, .025);
+      pointer-events: none;
+    }
+
+    .hero-emblem::before,
+    .hero-emblem::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(124, 158, 138, .055);
+      inset: clamp(18px, 7%, 40px);
+    }
+
+    .hero-emblem::after {
+      inset: clamp(44px, 17%, 90px);
+    }
+
+    /* ================================================================
+   VIDEO GRID
+   ================================================================ */
+    .youtube-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+      gap: var(--gap);
+      padding: var(--pad);
+    }
+
+    /* ================================================================
+   VIDEO CARD
+   ================================================================ */
+    .video-card {
+      display: flex;
+      flex-direction: column;
+      transition: transform .45s var(--ease);
+      will-change: transform;
+    }
+
+    .video-card:hover {
+      transform: translateY(-5px);
+    }
+
+    /* ================================================================
+   VIDEO WRAPPER
+   ================================================================ */
+    .video-wrapper {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: var(--bg-card);
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      /* Accent border that picks up the sage tint */
+      box-shadow: 0 0 0 1px var(--border);
+      transition: box-shadow .35s var(--ease);
+    }
+
+    .video-card:hover .video-wrapper {
+      box-shadow: 0 0 0 1px var(--border-hi), 0 8px 32px rgba(0, 0, 0, .35);
+    }
+
+    @supports not (aspect-ratio: 16/9) {
+      .video-wrapper {
+        height: 0;
+        padding-top: 56.25%;
+      }
+
+      .video-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    }
+
+    .video-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* ================================================================
+   VIDEO INFO
+   ================================================================ */
+    .video-info {
+      margin-top: clamp(12px, 2vw, 18px);
+      padding: 0 2px;
+    }
+
+    .video-info h3 {
+      margin: 0 0 clamp(5px, 1vw, 8px);
+      font-family: var(--font-display);
+      font-size: clamp(16px, 2.2vw, 22px);
+      font-weight: 400;
+      color: var(--text-hi);
+      line-height: 1.3;
+      letter-spacing: -.01em;
+      text-wrap: balance;
+    }
+
+    .video-info p {
+      margin: 0;
+      font-size: clamp(8px, .9vw, 9px);
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--text-lo);
+      line-height: 1.5;
+    }
+
+    /* accent dot before label */
+    .video-info p::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: .55;
+      margin-right: 8px;
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+    }
+
+    /* ================================================================
+   RESPONSIVE
+   ================================================================ */
+    @media (max-width: 768px) {
+      .youtube-grid {
+        gap: clamp(16px, 5vw, 26px);
+        padding: clamp(14px, 4vw, 26px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .youtube-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 14px;
+      }
+
+      .video-info h3 {
+        font-size: 16px;
+      }
+
+      .video-info p {
+        font-size: 8px;
+        letter-spacing: .18em;
+      }
+
+      .video-card:hover {
+        transform: none;
+      }
+    }
+
+    @media (max-width: 768px) and (orientation: landscape) {
+      .youtube-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1440px) {
+      .youtube-grid {
+        grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+        max-width: 1600px;
+        margin-inline: auto;
+      }
+    }
+
+    /* ================================================================
+   REDUCED MOTION
+   ================================================================ */
+    @media (prefers-reduced-motion: reduce) {
+
+      body::before,
+      body::after,
+      .bg-orbit::before,
+      .bg-orbit::after,
+      .emblem,
+      .video-card {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
 
 </head>
 
@@ -432,10 +882,10 @@
         style="font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:32px">
         Featured Reel
       </p>
-    
+
       <div
         style="aspect-ratio:16/9;border:1px solid rgba(255,255,255,.08);overflow:hidden;background:rgba(255,255,255,.02)">
-        
+
         <!-- <iframe
           width="100%"
           height="100%"
@@ -446,17 +896,11 @@
           allowfullscreen
           style="width:100%;height:100%;display:block">
         </iframe> -->
-        <iframe
-  width="100%"
-  height="100%"
-  src="https://www.youtube.com/embed/q-C-xDWN5QA?autoplay=1&mute=1"
-  title="Showreel"
-  frameborder="0"
-  allow="autoplay; encrypted-media"
-  allowfullscreen
-  style="width:100%;height:100%;display:block">
-</iframe>
-    
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/q-C-xDWN5QA?autoplay=1&mute=1"
+          title="Showreel" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen
+          style="width:100%;height:100%;display:block">
+        </iframe>
+
       </div>
     </section>
 
@@ -526,9 +970,9 @@
             </div>
           </div>
 
-          <div class="video-card">
+          <!-- <div class="video-card">
             <div class="video-wrapper">
-              <iframe src="https://www.youtube.com/embed/VIDEO_ID_2" title="Film 2" allowfullscreen>
+              <iframe src="https://www.youtube.com/embed/RgKAFK5djSk" title="Film 2" allowfullscreen>
               </iframe>
             </div>
 
@@ -540,13 +984,43 @@
 
           <div class="video-card">
             <div class="video-wrapper">
-              <iframe src="https://www.youtube.com/embed/VIDEO_ID_3" title="Film 3" allowfullscreen>
+              <iframe src="https://www.youtube.com/embed/hT_nvWreIhg" title="Film 3" allowfullscreen>
               </iframe>
             </div>
 
             <div class="video-info">
               <h3>Beyond the Horizon</h3>
               <p>Music Video / Editing</p>
+            </div>
+          </div> -->
+
+          <div class="video-card">
+            <div class="video-wrapper">
+              <iframe
+              src="https://www.youtube.com/embed/njX2bu-_Vw4"
+                              title="Film 2"
+                allowfullscreen>
+              </iframe>
+            </div>
+          
+            <div class="video-info">
+              <h3>Tears of Steel</h3>
+              <p>Short Film / Cinematic Storytelling</p>
+            </div>
+          </div>
+          
+          <div class="video-card">
+            <div class="video-wrapper">
+              <iframe
+                src="https://www.youtube.com/embed/njX2bu-_Vw4"
+                title="Film 3"
+                allowfullscreen>
+              </iframe>
+            </div>
+          
+            <div class="video-info">
+              <h3>Cinematic Travel Reel</h3>
+              <p>Travel Film / Cinematography</p>
             </div>
           </div>
 
@@ -560,7 +1034,7 @@
               <h3>Echoes</h3>
               <p>Documentary / Director</p>
             </div> -->
-          </div>
+        </div>
 
         </div>
         <!-- <div class="youtube-grid">
@@ -597,39 +1071,371 @@
         Full reel available on request</p>
     </section>
 
-    <!-- ABOUT -->
-    <!-- ABOUT -->
-    <section id="about" style="padding:120px 64px">
-      <div style="height:1px;background:rgba(255,255,255,.06);margin-bottom:80px"></div>
 
-      <p
-        style="font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:56px">
-        About
-      </p>
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-      <div style="max-width:1100px;display:grid;grid-template-columns:1.2fr .8fr;gap:100px">
+      :root {
+        --bg: #0e1117;
+        --bg-surface: #141820;
+        --bg-card: #181e28;
+        --text-hi: #e8e6e0;
+        --text-mid: rgba(232, 230, 224, .55);
+        --text-lo: rgba(200, 198, 210, .28);
+        --text-faint: rgba(200, 198, 210, .14);
+        --border: rgba(160, 168, 200, .09);
+        --border-hi: rgba(160, 168, 200, .2);
+        --accent: #7c9e8a;
+        --accent-dim: rgba(124, 158, 138, .18);
+        --font-d: 'Playfair Display', Georgia, serif;
+        --font-b: 'Inter', system-ui, sans-serif;
+        --ease: cubic-bezier(.16, 1, .3, 1);
+        --section-pad-v: clamp(72px, 10vw, 130px);
+        --section-pad-h: clamp(18px, 6vw, 80px);
+      }
+
+      html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text-hi);
+        font-family: var(--font-b);
+        font-weight: 300;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* ── SHARED SECTION CHROME ── */
+      .section-rule {
+        height: 1px;
+        background: var(--border);
+        margin-bottom: clamp(40px, 6vw, 80px);
+      }
+
+      .section-eyebrow {
+        font-size: 8px;
+        letter-spacing: .38em;
+        text-transform: uppercase;
+        color: var(--text-lo);
+        margin-bottom: clamp(36px, 5vw, 60px);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .section-eyebrow::before {
+        content: '';
+        display: inline-block;
+        width: 20px;
+        height: 1px;
+        background: var(--accent);
+        opacity: .5;
+        flex-shrink: 0;
+      }
+
+      /* ════════════════════════════════
+     ABOUT
+  ════════════════════════════════ */
+      #about {
+        padding: var(--section-pad-v) var(--section-pad-h);
+      }
+
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1.25fr .75fr;
+        gap: clamp(40px, 7vw, 100px);
+        max-width: 1140px;
+      }
+
+      .about-headline {
+        font-family: var(--font-d);
+        font-size: clamp(36px, 5.5vw, 76px);
+        line-height: .97;
+        font-weight: 400;
+        color: rgba(232, 230, 224, .88);
+        margin-bottom: clamp(24px, 3vw, 44px);
+        letter-spacing: -.015em;
+      }
+
+      .about-headline em {
+        font-style: italic;
+        color: var(--accent);
+        opacity: .85;
+      }
+
+      .about-body {
+        font-size: clamp(15px, 1.7vw, 19px);
+        line-height: 1.9;
+        color: var(--text-mid);
+        font-weight: 300;
+        max-width: 680px;
+      }
+
+      /* right column */
+      .about-sidebar {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: clamp(28px, 4vw, 44px);
+        border-left: 1px solid var(--border);
+        padding-left: clamp(24px, 4vw, 52px);
+      }
+
+      .sidebar-block-label {
+        font-size: 7px;
+        letter-spacing: .32em;
+        text-transform: uppercase;
+        color: var(--text-lo);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .sidebar-block-label::before {
+        content: '';
+        width: 12px;
+        height: 1px;
+        background: var(--accent);
+        opacity: .4;
+        flex-shrink: 0;
+      }
+
+      .sidebar-block-text {
+        font-size: clamp(13px, 1.4vw, 15px);
+        line-height: 1.85;
+        color: rgba(200, 198, 210, .42);
+        font-weight: 300;
+      }
+
+      /* stats row */
+      .about-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+        max-width: 1140px;
+        margin-top: clamp(48px, 6vw, 88px);
+        border-top: 1px solid var(--border);
+        border-left: 1px solid var(--border);
+      }
+
+      .stat-cell {
+        padding: clamp(20px, 3vw, 36px) clamp(16px, 2.5vw, 32px);
+        border-right: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .stat-num {
+        font-family: var(--font-d);
+        font-size: clamp(30px, 3.8vw, 48px);
+        color: rgba(232, 230, 224, .7);
+        font-weight: 400;
+        line-height: 1;
+        margin-bottom: 10px;
+        letter-spacing: -.02em;
+      }
+
+      .stat-label {
+        font-size: 7px;
+        letter-spacing: .28em;
+        text-transform: uppercase;
+        color: var(--text-lo);
+      }
+
+      /* discipline tags */
+      .about-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: clamp(16px, 2.5vw, 32px);
+        margin-top: clamp(40px, 5vw, 72px);
+        max-width: 1140px;
+      }
+
+      .tag {
+        font-size: 8px;
+        letter-spacing: .24em;
+        text-transform: uppercase;
+        color: rgba(200, 198, 210, .2);
+        padding-bottom: 6px;
+        border-bottom: 1px solid rgba(160, 168, 200, .08);
+        transition: color .4s var(--ease), border-color .4s var(--ease);
+        cursor: default;
+      }
+
+      .tag:hover {
+        color: var(--accent);
+        border-color: var(--accent-dim);
+      }
+
+      /* ════════════════════════════════
+     CONTACT
+  ════════════════════════════════ */
+      #contact {
+        padding: var(--section-pad-v) var(--section-pad-h);
+      }
+
+      .contact-headline {
+        font-family: var(--font-d);
+        font-size: clamp(38px, 7vw, 88px);
+        line-height: 1.04;
+        letter-spacing: -.018em;
+        color: rgba(232, 230, 224, .78);
+        font-weight: 400;
+        margin-bottom: clamp(40px, 6vw, 72px);
+      }
+
+      .contact-headline span {
+        font-style: italic;
+        color: rgba(232, 230, 224, .3);
+      }
+
+      .contact-list {
+        max-width: 520px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .contact-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: clamp(16px, 2.5vw, 24px) 0;
+        border-bottom: 1px solid var(--border);
+        text-decoration: none;
+        transition: border-color .45s var(--ease);
+        gap: 16px;
+      }
+
+      .contact-row:hover {
+        border-color: var(--border-hi);
+      }
+
+      .contact-row:hover .cr-label {
+        color: var(--accent);
+      }
+
+      .contact-row:hover .cr-value {
+        color: rgba(232, 230, 224, .82);
+      }
+
+      .contact-row:hover .cr-arrow {
+        color: var(--accent);
+        transform: translate(3px, -3px);
+      }
+
+      .cr-label {
+        font-size: 7px;
+        letter-spacing: .3em;
+        text-transform: uppercase;
+        color: var(--text-lo);
+        margin-bottom: 7px;
+        transition: color .4s var(--ease);
+      }
+
+      .cr-value {
+        font-size: clamp(12px, 1.3vw, 14px);
+        color: rgba(200, 198, 210, .44);
+        letter-spacing: .03em;
+        font-weight: 300;
+        transition: color .45s var(--ease);
+      }
+
+      .cr-arrow {
+        color: var(--text-lo);
+        font-size: 15px;
+        flex-shrink: 0;
+        transition: color .4s var(--ease), transform .4s var(--ease);
+        line-height: 1;
+      }
+
+      /* footer strip */
+      .contact-footer {
+        margin-top: clamp(60px, 8vw, 112px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding-top: 24px;
+        border-top: 1px solid var(--border);
+      }
+
+      .contact-footer p {
+        font-size: 8px;
+        letter-spacing: .22em;
+        text-transform: uppercase;
+        color: var(--text-faint);
+      }
+
+      /* ════════════════════════════════
+     RESPONSIVE
+  ════════════════════════════════ */
+      @media (max-width: 768px) {
+        .about-grid {
+          grid-template-columns: 1fr;
+          gap: 40px;
+        }
+
+        .about-sidebar {
+          border-left: none;
+          border-top: 1px solid var(--border);
+          padding-left: 0;
+          padding-top: 32px;
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 28px;
+        }
+
+        .about-sidebar>div {
+          flex: 1 1 180px;
+        }
+
+        .about-stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .about-stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .contact-headline br {
+          display: none;
+        }
+
+        .contact-footer {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+        }
+      }
+    </style>
+
+
+
+    <!-- ══════════════ ABOUT ══════════════ -->
+    <section id="about">
+      <div class="section-rule"></div>
+      <p class="section-eyebrow">About</p>
+
+      <div class="about-grid">
 
         <!-- LEFT -->
         <div>
-          <h2 style="
-        font-family:'Playfair Display', Georgia, serif;
-        font-size:clamp(42px,6vw,82px);
-        line-height:.95;
-        font-weight:400;
-        color:rgba(255,255,255,.85);
-        margin-bottom:40px;
-        max-width:700px;
-      ">
-            I tell stories through light, movement, and emotion.
+          <h2 class="about-headline">
+            I tell stories through<br>light, <em>movement,</em><br>and emotion.
           </h2>
-
-          <p style="
-        font-size:clamp(16px,1.8vw,20px);
-        line-height:1.9;
-        color:rgba(255,255,255,.55);
-        font-weight:300;
-        max-width:760px;
-      ">
+          <p class="about-body">
             As a director and cinematographer, I am drawn to moments that feel real —
             unspoken glances, imperfect details, and the atmosphere between words.
             My work spans documentaries, commercial films, music videos, and branded
@@ -638,247 +1444,96 @@
         </div>
 
         <!-- RIGHT -->
-        <div style="
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-end;
-      gap:40px;
-      border-left:1px solid rgba(255,255,255,.06);
-      padding-left:48px;
-    ">
+        <div class="about-sidebar">
           <div>
-            <p style="
-          font-size:8px;
-          letter-spacing:.3em;
-          text-transform:uppercase;
-          color:rgba(255,255,255,.2);
-          margin-bottom:12px;
-        ">
-              Focus
-            </p>
-
-            <p style="
-          font-size:15px;
-          line-height:1.8;
-          color:rgba(255,255,255,.45);
-          font-weight:300;
-        ">
+            <p class="sidebar-block-label">Focus</p>
+            <p class="sidebar-block-text">
               Crafting visually driven narratives that balance authenticity,
               atmosphere, and emotion.
             </p>
           </div>
-
           <div>
-            <p style="
-          font-size:8px;
-          letter-spacing:.3em;
-          text-transform:uppercase;
-          color:rgba(255,255,255,.2);
-          margin-bottom:12px;
-        ">
-              Approach
-            </p>
-
-            <p style="
-          font-size:15px;
-          line-height:1.8;
-          color:rgba(255,255,255,.45);
-          font-weight:300;
-        ">
-              Every frame is built around feeling first — using light,
-              composition, movement, and performance to create stories that
-              resonate beyond the screen.
+            <p class="sidebar-block-label">Approach</p>
+            <p class="sidebar-block-text">
+              Every frame is built around feeling first — using light, composition,
+              movement, and performance to create stories that resonate beyond the screen.
             </p>
           </div>
         </div>
 
       </div>
 
-      <div style="display:flex;flex-wrap:wrap;gap:32px;margin-top:80px">
+      <!-- STATS -->
+      <div class="about-stats">
+        <div class="stat-cell">
+          <p class="stat-num">40+</p>
+          <p class="stat-label">Projects</p>
+        </div>
+        <div class="stat-cell">
+          <p class="stat-num">12</p>
+          <p class="stat-label">Awards</p>
+        </div>
+        <div class="stat-cell">
+          <p class="stat-num">6</p>
+          <p class="stat-label">Countries</p>
+        </div>
+        <div class="stat-cell">
+          <p class="stat-num">2019</p>
+          <p class="stat-label">Est.</p>
+        </div>
+      </div>
 
-        <span style="
-      font-size:8px;
-      letter-spacing:.25em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.18);
-      border-bottom:1px solid rgba(255,255,255,.07);
-      padding-bottom:6px">
-          Direction
-        </span>
-
-        <span style="
-      font-size:8px;
-      letter-spacing:.25em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.18);
-      border-bottom:1px solid rgba(255,255,255,.07);
-      padding-bottom:6px">
-          Cinematography
-        </span>
-
-        <span style="
-      font-size:8px;
-      letter-spacing:.25em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.18);
-      border-bottom:1px solid rgba(255,255,255,.07);
-      padding-bottom:6px">
-          Documentary
-        </span>
-
-        <span style="
-      font-size:8px;
-      letter-spacing:.25em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.18);
-      border-bottom:1px solid rgba(255,255,255,.07);
-      padding-bottom:6px">
-          Commercial Film
-        </span>
-
-        <span style="
-      font-size:8px;
-      letter-spacing:.25em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.18);
-      border-bottom:1px solid rgba(255,255,255,.07);
-      padding-bottom:6px">
-          Music Video
-        </span>
-
-        <span style="
-      font-size:8px;
-      letter-spacing:.25em;
-      text-transform:uppercase;
-      color:rgba(255,255,255,.18);
-      border-bottom:1px solid rgba(255,255,255,.07);
-      padding-bottom:6px">
-          Branded Content
-        </span>
-
+      <!-- TAGS -->
+      <div class="about-tags">
+        <span class="tag">Direction</span>
+        <span class="tag">Cinematography</span>
+        <span class="tag">Documentary</span>
+        <span class="tag">Commercial Film</span>
+        <span class="tag">Music Video</span>
+        <span class="tag">Branded Content</span>
       </div>
     </section>
-    <!-- <section id="about" style="padding:120px 64px">
-      <div style="height:1px;background:rgba(255,255,255,.06);margin-bottom:80px"></div>
-      <p
-        style="font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:56px">
-        About</p>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;max-width:900px">
-        <div>
-          <p
-            style="font-size:clamp(15px,1.8vw,18px);line-height:1.8;color:rgba(255,255,255,.5);margin-bottom:24px;font-weight:300">
-            I make films the way some people write letters — with intention, restraint, and an eye for what remains
-            after the moment passes.</p>
-          <p style="font-size:13px;line-height:1.9;color:rgba(255,255,255,.25);font-weight:300">Based between Lahore and
-            wherever the work takes me. Drawn to stories that live in the peripheral — things felt before they are
-            understood.</p>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px 24px;align-content:start">
+    <!-- ══════════════ CONTACT ══════════════ -->
+    <section id="contact">
+      <div class="section-rule"></div>
+      <p class="section-eyebrow">Contact</p>
+
+      <h2 class="contact-headline">
+        Let's make<br><span>something.</span>
+      </h2>
+
+      <div class="contact-list">
+
+        <a href="mailto:arslan.rana.30000@gmail.com" class="contact-row">
           <div>
-            <p
-              style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.5vw,42px);color:rgba(255,255,255,.65);margin-bottom:6px;font-weight:400">
-              40+</p>
-            <p style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.22)">Projects
-            </p>
+            <p class="cr-label">Email</p>
+            <p class="cr-value">arslan.rana.30000@gmail.com</p>
           </div>
+          <span class="cr-arrow">→</span>
+        </a>
+
+        <a href="#" class="contact-row">
           <div>
-            <p
-              style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.5vw,42px);color:rgba(255,255,255,.65);margin-bottom:6px;font-weight:400">
-              12</p>
-            <p style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.22)">Awards
-            </p>
+            <p class="cr-label">Instagram</p>
+            <p class="cr-value">@Arxlan__</p>
           </div>
+          <span class="cr-arrow">→</span>
+        </a>
+
+        <a href="#" class="contact-row">
           <div>
-            <p
-              style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.5vw,42px);color:rgba(255,255,255,.65);margin-bottom:6px;font-weight:400">
-              6</p>
-            <p style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.22)">Countries
-            </p>
+            <p class="cr-label">Vimeo</p>
+            <p class="cr-value">vimeo.com/arslanrana</p>
           </div>
-          <div>
-            <p
-              style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,3.5vw,42px);color:rgba(255,255,255,.65);margin-bottom:6px;font-weight:400">
-              2019</p>
-            <p style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.22)">Est.</p>
-          </div>
-        </div>
+          <span class="cr-arrow">→</span>
+        </a>
+
       </div>
 
-      <div style="display:flex;flex-wrap:wrap;gap:32px;margin-top:56px">
-        <span
-          style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:6px">Direction</span>
-        <span
-          style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:6px">Cinematography</span>
-        <span
-          style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:6px">Documentary</span>
-        <span
-          style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:6px">Music
-          Video</span>
-        <span
-          style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:6px">Color
-          Grading</span>
-      </div>
-    </section> -->
-
-    <!-- CONTACT -->
-    <section id="contact" style="padding:120px 64px">
-      <div style="height:1px;background:rgba(255,255,255,.06);margin-bottom:80px"></div>
-      <p
-        style="font-size:8px;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.2);margin-bottom:48px">
-        Contact</p>
-
-      <h2
-        style="font-family:'Playfair Display',Georgia,serif;font-size:clamp(36px,7vw,82px);line-height:1.05;letter-spacing:-.015em;color:rgba(255,255,255,.75);font-weight:400;margin-bottom:56px">
-        Let's make<br><span style="font-style:italic;color:rgba(255,255,255,.35)">something.</span></h2>
-
-      <div style="max-width:480px;display:flex;flex-direction:column;gap:0">
-        <a href="mailto:arslan@example.com" class="contact-row"
-          style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);padding:20px 0;text-decoration:none;transition:border-color .5s"
-          onmouseenter="this.style.borderColor='rgba(255,255,255,.2)';this.querySelector('.cl').style.color='rgba(255,255,255,.75)';this.querySelector('.ca').style.color='rgba(255,255,255,.45)'"
-          onmouseleave="this.style.borderColor='rgba(255,255,255,.07)';this.querySelector('.cl').style.color='rgba(255,255,255,.42)';this.querySelector('.ca').style.color='rgba(255,255,255,.18)'">
-          <div>
-            <p
-              style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-bottom:8px">
-              Email</p>
-            <p class="cl" style="font-size:13px;color:rgba(255,255,255,.42);letter-spacing:.03em;transition:color .5s">
-              arslan.rana.30000@gmail.com</p>
-          </div>
-          <span class="ca" style="color:rgba(255,255,255,.18);font-size:14px;transition:color .5s">→</span>
-        </a>
-        <a href="#" class="contact-row"
-          style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);padding:20px 0;text-decoration:none;transition:border-color .5s"
-          onmouseenter="this.style.borderColor='rgba(255,255,255,.2)';this.querySelector('.cl').style.color='rgba(255,255,255,.75)';this.querySelector('.ca').style.color='rgba(255,255,255,.45)'"
-          onmouseleave="this.style.borderColor='rgba(255,255,255,.07)';this.querySelector('.cl').style.color='rgba(255,255,255,.42)';this.querySelector('.ca').style.color='rgba(255,255,255,.18)'">
-          <div>
-            <p
-              style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-bottom:8px">
-              Instagram</p>
-            <p class="cl" style="font-size:13px;color:rgba(255,255,255,.42);letter-spacing:.03em;transition:color .5s">
-              @Arxlan__</p>
-          </div>
-          <span class="ca" style="color:rgba(255,255,255,.18);font-size:14px;transition:color .5s">→</span>
-        </a>
-        <a href="#" class="contact-row"
-          style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);padding:20px 0;text-decoration:none;transition:border-color .5s"
-          onmouseenter="this.style.borderColor='rgba(255,255,255,.2)';this.querySelector('.cl').style.color='rgba(255,255,255,.75)';this.querySelector('.ca').style.color='rgba(255,255,255,.45)'"
-          onmouseleave="this.style.borderColor='rgba(255,255,255,.07)';this.querySelector('.cl').style.color='rgba(255,255,255,.42)';this.querySelector('.ca').style.color='rgba(255,255,255,.18)'">
-          <div>
-            <p
-              style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.18);margin-bottom:8px">
-              Vimeo</p>
-            <p class="cl" style="font-size:13px;color:rgba(255,255,255,.42);letter-spacing:.03em;transition:color .5s">
-              vimeo.com/arslanrana</p>
-          </div>
-          <span class="ca" style="color:rgba(255,255,255,.18);font-size:14px;transition:color .5s">→</span>
-        </a>
-      </div>
-
-      <div style="margin-top:96px;display:flex;align-items:center;justify-content:space-between">
-        <p style="font-size:8px;letter-spacing:.25em;text-transform:uppercase;color:rgba(255,255,255,.12)">© 2024 Arslan
-          Rana — All Rights Reserved</p>
-        <p style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.08)">Lahore,
-          Pakistan</p>
+      <div class="contact-footer">
+        <p>© 2024 Arslan Rana — All Rights Reserved</p>
+        <p>Lahore, Pakistan</p>
       </div>
     </section>
 
